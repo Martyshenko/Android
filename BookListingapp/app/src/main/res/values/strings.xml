@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Book Listing app</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="no_earthquakes_found">No earthquakes found</string>
+    <string name="type_in_your_request">Type in your request</string>
+    <string name="find_it">Find it</string>
+    <string name="empty_view">Enter your request to find a book by author or title</string>
+</resources>
