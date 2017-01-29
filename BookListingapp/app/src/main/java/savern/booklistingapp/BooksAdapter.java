@@ -39,6 +39,11 @@ public class BooksAdapter extends ArrayAdapter<Book> {
         // Display the tile of the current book in that TextView
         titleView.setText(title);
 
+        String description = currentBook.getDescription();
+        // Find the TextView with view ID description
+        TextView descriptionView = (TextView) listItemView.findViewById(R.id.description);
+        // Display the description of the current book in that TextView
+        descriptionView.setText(description);
 
         return listItemView;
     }

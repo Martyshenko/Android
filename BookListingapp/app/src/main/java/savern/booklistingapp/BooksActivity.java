@@ -19,10 +19,11 @@ import java.util.List;
 
 public class BooksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
-    public static final String LOG_TAG = BooksActivity.class.getName();
+    private String request = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=f49ec6ddb21c4fc084f53cdf0b51a2f9&q=";
 
-    private String request = "https://www.googleapis.com/books/v1/volumes?q=";
-    /** Adapter for the list of books */
+    /**
+     * Adapter for the list of books
+     */
     private BooksAdapter mAdapter;
     private static final int EARTHQUAKE_LOADER_ID = 1;
     private String mInput;
@@ -37,7 +38,7 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
         // Find a reference to the {@link ListView} in the layout
         ListView booksListView = (ListView) findViewById(R.id.list);
 
-        mEmptyView = (TextView)findViewById(R.id.empty_list_item);
+        mEmptyView = (TextView) findViewById(R.id.empty_list_item);
         booksListView.setEmptyView(mEmptyView);
 
         loadingIndicator = findViewById(R.id.loading_spinner);
@@ -46,7 +47,7 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
         mEmptyView.setText(R.string.empty_view);
 
         // Create a new adapter that takes an empty list of books as mInput
-        mAdapter  = new BooksAdapter(
+        mAdapter = new BooksAdapter(
                 this, new ArrayList<Book>());
 
         // Set the adapter on the {@link ListView}
@@ -57,27 +58,31 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
 
         final Button button = (Button) findViewById(R.id.submit);
 
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        LoaderManager loaderManager = getLoaderManager();
+
+        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+        // because this activity implements the LoaderCallbacks interface).
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, BooksActivity.this);
+
         button.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 mInput = searchField.getText().toString();
                 mEmptyView.setText("");
                 loadingIndicator.setVisibility(View.VISIBLE);
                 // Get a reference to the ConnectivityManager to check state of network connectivity
-                ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
                 // Get details on the currently active default data network
                 NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
                 // If there is a network connection, fetch data
                 if (networkInfo != null && networkInfo.isConnected()) {
-                    // Get a reference to the LoaderManager, in order to interact with loaders.
-                    LoaderManager loaderManager = getLoaderManager();
 
-                    // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-                    // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-                    // because this activity implements the LoaderCallbacks interface).
-                    loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, BooksActivity.this);
-                }else{
+                    //restart loader
+                    getLoaderManager().restartLoader(0, null, BooksActivity.this);
+                } else {
                     //Otherwise, display error
                     //First, hide loading indicator so error message will be visible
                     View loadingIndicator = findViewById(R.id.loading_spinner);
@@ -88,12 +93,11 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
             }
         });
 
-
     }
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        return new BooksLoader(this,request+ mInput);
+        return new BooksLoader(this, request + mInput);
     }
 
     @Override
@@ -103,21 +107,19 @@ public class BooksActivity extends AppCompatActivity implements LoaderManager.Lo
         // Clear the adapter of previous books data
         mAdapter.clear();
 
-        // If there is a valid list of {@link listOfBooks}s, then add them to the adapter's
+        // If there is a valid list of {@link listOfBooks}, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if (listOfBooks != null && !listOfBooks.isEmpty()) {
             mAdapter.addAll(listOfBooks);
-        }
+        } else if (mInput != null)
+            mEmptyView.setText(R.string.no_matches_found);
     }
 
     @Override
     public void onLoaderReset(Loader<List<Book>> loader) {
         //Loader reset, so we can clear out our existing data.
-        // Clear the adapter of previous books data
         mAdapter.clear();
     }
-
-
 
 
 }

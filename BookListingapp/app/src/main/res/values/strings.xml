@@ -5,4 +5,5 @@
     <string name="type_in_your_request">Type in your request</string>
     <string name="find_it">Find it</string>
     <string name="empty_view">Enter your request to find a book by author or title</string>
+    <string name="no_matches_found">Sorry, no matches were found for your search</string>
 </resources>

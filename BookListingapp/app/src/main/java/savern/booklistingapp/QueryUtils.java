@@ -1,6 +1,7 @@
 package savern.booklistingapp;
 
 import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,13 +34,11 @@ public final class QueryUtils {
             jsonResponse = makeHttpRequest(url);
         } catch (IOException e) {
         }
-        // Extract relevant fields from the JSON response and return an {@link List<Books>} List
-        return extractEarthquakes(jsonResponse);
+        // Extract relevant fields from the JSON response and return a {@link List<Books>} List
+        return extractBooks(jsonResponse);
     }
 
-    /**
-     * Returns new URL object from the given string URL.
-     */
+
     private static URL createUrl(String stringUrl) {
         URL url = null;
         try {
@@ -49,9 +48,7 @@ public final class QueryUtils {
         return url;
     }
 
-    /**
-     * Make an HTTP request to the given URL and return a String as the response.
-     */
+
     private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
@@ -76,7 +73,8 @@ public final class QueryUtils {
                 jsonResponse = readFromStream(inputStream);
             }
         } catch (IOException e) {
-        e.printStackTrace();} finally {
+            e.printStackTrace();
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -87,10 +85,6 @@ public final class QueryUtils {
         return jsonResponse;
     }
 
-    /**
-     * Convert the {@link InputStream} into a String which contains the
-     * whole JSON response from the server.
-     */
     private static String readFromStream(InputStream inputStream) throws IOException {
         StringBuilder output = new StringBuilder();
         if (inputStream != null) {
@@ -105,8 +99,7 @@ public final class QueryUtils {
         return output.toString();
     }
 
-
-    private static List<Book> extractEarthquakes(String jsonResponse) {
+    private static List<Book> extractBooks(String jsonResponse) {
         // If the JSON string is empty or null, then return early.
         if (TextUtils.isEmpty(jsonResponse)) {
             return null;
@@ -130,9 +123,11 @@ public final class QueryUtils {
                 //Takes a String associated with the key called "title"
                 String title = volumeInfo.getString("title");
                 // Extract the JSONArray associated with the key called "authors",
-                JSONArray authors = volumeInfo.getJSONArray("authors");
+                JSONArray authorsAr = volumeInfo.getJSONArray("authors");
+                String authors = authorsAr.toString().replace("[", "").replace("]", "");
                 // Create a new {@link Book} object with the author or authors, and title from the JSON response.
-                Book book = new Book(authors.toString(),title);
+                String description = bookJSONObj.getString("description");
+                Book book = new Book(authors, title, description);
                 // Add the new {@link Book} to the list of books.
                 books.add(book);
             }
@@ -142,4 +137,5 @@ public final class QueryUtils {
         }
         return books;
     }
+
 }
