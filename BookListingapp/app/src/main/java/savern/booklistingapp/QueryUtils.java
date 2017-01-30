@@ -120,13 +120,19 @@ public final class QueryUtils {
                 // key called "volumeInfo", which includes required information
                 // for that book.
                 JSONObject volumeInfo = bookJSONObj.getJSONObject("volumeInfo");
-                //Takes a String associated with the key called "title"
-                String title = volumeInfo.getString("title");
-                // Extract the JSONArray associated with the key called "authors",
-                JSONArray authorsAr = volumeInfo.getJSONArray("authors");
-                String authors = authorsAr.toString().replace("[", "").replace("]", "");
-                // Create a new {@link Book} object with the author or authors, and title from the JSON response.
-                String description = bookJSONObj.getString("description");
+                String title = "";
+                if (volumeInfo.has("title")) {
+                    title = volumeInfo.getString("title");
+                }
+                String authors = "";
+                if (volumeInfo.has("authors")) {
+                    JSONArray authorsAr = volumeInfo.getJSONArray("authors");
+                    authors = authorsAr.toString().replace("[", "").replace("]", "");
+                }
+                String description = "";
+                if (bookJSONObj.has("description")) {
+                    description = bookJSONObj.getString("description");
+                }
                 Book book = new Book(authors, title, description);
                 // Add the new {@link Book} to the list of books.
                 books.add(book);
