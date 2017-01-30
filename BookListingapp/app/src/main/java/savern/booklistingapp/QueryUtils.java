@@ -25,7 +25,7 @@ public final class QueryUtils {
 
     }
 
-    public static List<Book> fetchEarthquakeData(String requestUrl) {
+    public static List<Book> fetchBooksData(String requestUrl) {
         URL url = createUrl(requestUrl);
 
         // Perform HTTP request to the URL and receive a JSON response back

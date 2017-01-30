@@ -19,8 +19,7 @@ import java.util.List;
 
 public class BooksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
-    private String request = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=f49ec6ddb21c4fc084f53cdf0b51a2f9&q=";
-
+    private String request = "https://www.googleapis.com/books/v1/volumes?q=";
     /**
      * Adapter for the list of books
      */
